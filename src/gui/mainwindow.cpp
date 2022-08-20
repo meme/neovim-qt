@@ -43,8 +43,6 @@ void MainWindow::init(NeovimConnector *c)
 
 	m_shell = new Shell(c);
 
-	addToolBar(&m_tabline);
-
 	m_nvim = c;
 	m_nvim->setParent(this);
 
@@ -67,9 +65,17 @@ void MainWindow::init(NeovimConnector *c)
 	layout->addWidget(m_scrollbar);
 	shellScrollable->setLayout(layout);
 
+	QWidget* tabbedShell{ new QWidget() };
+	QVBoxLayout* verticalLayout{ new QVBoxLayout() };
+	verticalLayout->setSpacing(0);
+	verticalLayout->setContentsMargins(0, 0, 0, 0);
+	verticalLayout->addWidget(&m_tabline);
+	verticalLayout->addWidget(shellScrollable);
+	tabbedShell->setLayout(verticalLayout);
+
 	m_window = new QSplitter();
 	m_window->addWidget(m_tree);
-	m_window->addWidget(shellScrollable);
+	m_window->addWidget(tabbedShell);
 
 	const int splitterWidth{ m_window->width() };
 	m_window->setSizes({ splitterWidth * 25 / 100, splitterWidth * 75 / 100 });
